@@ -33,40 +33,14 @@ jobs:
     - name: Install gox
       run: hack/install-gox.sh
 
-    - name: Ensure go.mod is already tidied
-      run: go mod tidy && git diff --no-patch --exit-code
-
-    - name: Verify code patterns
-      run: hack/verify-code-patterns.sh
-
-    - name: Verify boilerplate
-      run: hack/verify-boilerplate.sh
-
-    - name: Run code lint
-      run: hack/run-lint.sh
-
-    - name: Run unit tests
-      run: go test -short ./...
-
     - name: Make binaries && verify krew installation
       run: hack/make-all.sh
 
-    - name: Ensure kubectl installed
-      run: hack/ensure-kubectl-installed.sh
-
-    - name: Verify installation
-      run: hack/verify-installation.sh
-
-    - name: Run integration tests
-      run: hack/run-integration-tests.sh
-
-    - name: Verify index migration from 0.3.x to 0.4.x
-      run: hack/verify-index-migration.sh
-
     - name: Create a new release
-      if: contains(github.ref, 'tags')
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
         name: Release ${{ github.ref_name }}
         files: out/krew*
+        generate_release_notes: true
+        apend_body: true
